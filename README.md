@@ -16,6 +16,8 @@ Repository for the paper
 > Keith G. Mills, Fred X. Han, Mohammad Salameh, Shengyao Lu, Chunhua Zhou, Jiao He, Fengyu Sun, Di Niu \
 > CVPR 2024
 
+[[Poster](https://kgmills.github.io/assets/posters/AutoBuild_CVPR24_poster.pdf)][[Video](https://www.youtube.com/watch?v=rujgUNaXKr4&ab_channel=KeithMills)][[Slides](https://kgmills.github.io/assets/slides/AutoBuild_CVPR24_slides.pdf)]
+
 <p align="center">
   <img src="autobuild.png" alt="High-level illustration">
 </p>
