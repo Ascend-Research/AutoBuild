@@ -147,11 +147,12 @@ To run the original BlockProfiling with layer-wise mutation, please see the inst
 ### Bibtex 
 If you find our framework useful, we kindly ask that you cite our paper:
 ```
-@inproceedings{mills2024autobuild,
-    author    = {Mills, Keith G. and Fred, X. Han and Salameh, Mohammad and Lu, Shengyao and Zhou, Chunhua and He, Jiao and Sun, Fengyu and Niu, Di},
+@InProceedings{mills2024autobuild,
+    author    = {Mills, Keith G. and Han, Fred X. and Salameh, Mohammad and Lu, Shengyao and Zhou, Chunhua and He, Jiao and Sun, Fengyu and Niu, Di},
     title     = {Building Optimal Neural Architectures using Interpretable Knowledge},
     booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
     month     = {June},
     year      = {2024},
+    pages     = {5726-5735}
 }
 ```
