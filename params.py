@@ -9,6 +9,7 @@ CONFIG_DIR = P_SEP.join([BASE_DIR, "configs"])
 UNITS_DIR = P_SEP.join([BASE_DIR, "units"])
 EVALS_DIR = P_SEP.join([BASE_DIR, "evals"])
 PLOTS_DIR = P_SEP.join([BASE_DIR, "plots"])
+QC_DIR = P_SEP.join([BASE_DIR, "quant_configs"])
 
 
 if not os.path.exists(CACHE_DIR): os.makedirs(CACHE_DIR)
@@ -17,3 +18,4 @@ if not os.path.exists(CONFIG_DIR): os.makedirs(CONFIG_DIR)
 if not os.path.exists(UNITS_DIR): os.makedirs(UNITS_DIR)
 if not os.path.exists(EVALS_DIR): os.makedirs(EVALS_DIR)
 if not os.path.exists(PLOTS_DIR): os.makedirs(PLOTS_DIR)
+if not os.path.exists(QC_DIR): os.makedirs(QC_DIR)

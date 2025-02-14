@@ -16,6 +16,12 @@ LABELS_SUPPORTED = [
     "latency_cpu",
     "latency_npu",
     "n_params",
+    "FID-GT-1k",
+    "FID-FP-1k",
+    "quantized_size",
+    "quantized_error",
+    "avg_bits",
+    "bops"
 ]
 
 

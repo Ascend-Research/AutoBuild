@@ -7,6 +7,7 @@ from ge_utils.custom_embeds import discern_custom_family
 
 
 MAX_COLOR = 255
+             
                     
 def _resize_graph(dot, size_per_element=1.0, min_size=18):
     num_rows = len(dot.body)
@@ -14,6 +15,7 @@ def _resize_graph(dot, size_per_element=1.0, min_size=18):
     size = max(min_size, content_size)
     size_str = str(size) + "," + str(size)
     dot.graph_attr.update(size=size_str)
+
 
 def visualize_onnx_ir_nembeds(graph:Graph,
                     tg_x,

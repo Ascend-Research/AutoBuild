@@ -39,3 +39,32 @@ MobileNetNodeEmbedding_FEAT_MAP = {
     4: "Kernel",
     5: "Resolution"
 }
+
+DiTNodeEmbedding_FEAT_MAP = {
+    0: "Quant. Method",
+    1: "Bit Precision",
+    2: "Reduction",
+    3: "Quant. Error",
+    4: "Block Idx",
+    5: "Layer Type"
+}
+
+SDV15NodeEmbedding_FEAT_MAP = {
+    0: "Quant. Method",
+    1: "Bit Precision",
+    2: "Reduction",
+    3: "Quant. Error",
+    4: "Stage Idx",
+    5: "Block Idx",
+    6: "Layer Type"
+}
+
+SDXLNodeEmbedding_FEAT_MAP = {
+    0: "Quant. Method",
+    1: "Bit Precision",
+    2: "Reduction",
+    3: "Quant. Error",
+    4: "Stage Idx",
+    5: "Block Idx",
+    6: "Layer Type"
+}

@@ -9,6 +9,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 DEVICE_STR_OVERRIDE = None
 
+
 def device(device_id="cuda:0", ref_tensor=None):
     if ref_tensor is not None:
         return ref_tensor.get_device()
@@ -16,6 +17,7 @@ def device(device_id="cuda:0", ref_tensor=None):
         return torch.device(device_id if torch.cuda.is_available() else "cpu")
     else:
         return torch.device(DEVICE_STR_OVERRIDE)
+
 
 def sample_categorical_idx(weights):
     if len(weights) == 1: return 0
@@ -133,8 +135,27 @@ def get_train_config_from_chkpt(chkpt):
     return train_config
 
 
+def get_train_config_from_chkpt_folder(chkpt):
+    config_file = chkpt.replace("saved_models", "configs")
+    config_file = config_file[:-1]
+    config_file += "_config.pkl"
+    with open(config_file, "rb") as f:
+        train_config = pickle.load(f)
+    return train_config
+
+
 def save_units(sg_list, chkpt):
     save_file = chkpt.replace("saved_models", "units").replace("predictor.pt", "labeled_sgs.pkl")
+    with open(save_file, "wb") as f:
+        pickle.dump(sg_list, f, protocol=4)
+    return save_file
+
+
+def save_units_folder(sg_list, chkpt):
+    save_file = chkpt.replace("saved_models", "units") #.replace("predictor.pt", "labeled_sgs.pkl")
+    save_file = save_file[:-1]
+    save_file += "_labeled.pkl"
+    print(save_file)
     with open(save_file, "wb") as f:
         pickle.dump(sg_list, f, protocol=4)
     return save_file
@@ -183,12 +204,13 @@ def get_regression_metrics(pred_list, target_list):
     rv = {
         "mean_square_error": mean_sq_error,
         "mean_absolute_error": mean_abs_error,
-        "max_error": max_err,
-        "mean_absolute_percent_error": mape,
-        "mape_effective_sample_size_diff": abs(len(mape_pred_list) - len(pred_list)),
-        "pred_mean": pred_mean,
-        "pred_variance": pred_variance,
-        "truth_mean": truth_mean,
-        "truth_variance": truth_variance,
+        #"max_error": max_err,
+        #"mean_absolute_percent_error": mape,
+        #"mape_effective_sample_size_diff": abs(len(mape_pred_list) - len(pred_list)),
+        #"pred_mean": pred_mean,
+        #"pred_variance": pred_variance,
+        #"truth_mean": truth_mean,
+        #"truth_variance": truth_variance,
     }
+    
     return rv

@@ -8,6 +8,11 @@ from onnx_ir.graph import Graph
 from onnx_ir.encoding import get_node_features
 from onnx_ir.op import OP2IDX
 from ge_utils.custom_embeds import discern_custom_family
+from sdm.graph_dit import construct_dit_tg_graph
+from sdm.graph_sdv15 import construct_sdv15_tg_graph
+from sdm.graph_sdxl import construct_sdxl_tg_graph
+from sdm.graph_pixart import construct_pixart_tg_graph
+from sdm.graph_hunyuan import construct_hunyuan_tg_graph
 
 op2i = OP2IDX()
 
@@ -32,6 +37,20 @@ def get_entry_as_torch_geo(entry:dict, undirected=False, format=None, y=None):
     elif format is not None and format == "onnx_ir":
         assert "graph" in entry.keys()
         return _get_graph_as_torch_geo(entry['graph'], undirected=undirected, y=y)
+    elif format == "sdm":
+        assert "architecture" in entry.keys()
+        if entry["architecture"] == 'DiT':
+            return construct_dit_tg_graph(entry['config'], y=y)
+        elif entry["architecture"] == 'SDv1.5':
+            return construct_sdv15_tg_graph(entry['config'], y=y)
+        elif entry["architecture"] == 'SDXL':
+            return construct_sdxl_tg_graph(entry['config'], y=y)
+        elif entry["architecture"] in ['alpha', 'sigma']:
+            return construct_pixart_tg_graph(entry['config'], y=y)
+        elif entry["architecture"] == "hunyuan":
+            return construct_hunyuan_tg_graph(entry['config'], y=y)
+        else:
+            raise NotImplementedError("Unknown SDM model")
     else:
         raise NotImplementedError("Unknown entry format")
     

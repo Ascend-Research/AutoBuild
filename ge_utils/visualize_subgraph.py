@@ -7,6 +7,7 @@ from ge_utils.custom_embeds import discern_custom_family
 
 MAX_COLOR = 255
                     
+                    
 def _resize_graph(dot, size_per_element=1.0, min_size=18):
     num_rows = len(dot.body)
     content_size = num_rows * size_per_element

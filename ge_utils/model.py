@@ -61,6 +61,7 @@ class GraphPredictor(GraphRegressor):
         self.hop_moments = t.nn.Parameter(t.cat([t.zeros(num_layers).unsqueeze(0), t.ones(num_layers).unsqueeze(0)], dim=0), requires_grad=False)
         self.mlp_moments = t.nn.Parameter(t.Tensor([0., 1.]), requires_grad=False)
         self.test_metrics = t.nn.Parameter(t.Tensor([float("inf"), 100.0, 0.]), requires_grad=False)
+        self.hop_srcc = t.nn.Parameter(t.ones(num_layers), requires_grad=False)
 
     def forward_nodes(self, geo_batch):
         batch_embedding = self.forward_gnn(geo_batch)
@@ -121,7 +122,7 @@ class GraphPredictor(GraphRegressor):
         hop_batch_embedding_list = self.encoder.forward_all_hops(geo_batch, node_embedding)
         batch_as_set = set(geo_batch.batch.tolist())
         geo_batch.batch = geo_batch.batch.to(device())
-        graph_embedding_list = [self.aggregator(x=embedding_list, batch=geo_batch.batch) for embedding_list in hop_batch_embedding_list]
+        graph_embedding_list = [self.aggregator(h=hop_batch_embedding_list[i], hop=i, batch=geo_batch.batch)for i in range(len(hop_batch_embedding_list))]
         assert graph_embedding_list[-1].shape[0] == len(batch_as_set)
         return graph_embedding_list
 
@@ -198,6 +199,7 @@ def make_predictor(node_level=False,
                    reg_activ="ReLU", aggr_method="mean",
                    residual=False,
                    gnn_chkpt=None,
+                   fe_mlp=False,
                    **kwargs):
 
     gnn_activ = eval(f"t.nn.{gnn_activ}()")
@@ -211,7 +213,7 @@ def make_predictor(node_level=False,
                                     shape_embed_size=shape_embed_size,
                                     attr_embed_size=attr_embed_size)
     else:
-        embed_layer = _make_custom_node_embed_layer(families)
+        embed_layer = _make_custom_node_embed_layer(families, fe_mlp)
 
     gnn_constructor = eval(f"tg.nn.{gnn_type}")
     encoder = TGeoPreEmbeddedGraphEncoder(embed_layer.out_embed_size, gnn_dim, gnn_dim,
@@ -220,15 +222,14 @@ def make_predictor(node_level=False,
                                         n_layers=num_layers,
                                         dropout_prob=dropout_prob,
                                         residual=residual)
-        
     if aggr_method == "mean":
         aggregator = tg.nn.glob.global_mean_pool
     elif aggr_method == "sum":
         aggregator = tg.nn.glob.global_add_pool
-    elif aggr_method == "max":
-        aggregator = tg.nn.glob.global_max_pool
     else:
         raise NotImplementedError(f"Unknown aggregation method {aggr_method}")
+    from ge_utils.custom_aggr import SELECTIVE_AGGR
+    aggregator = SELECTIVE_AGGR(tg_agg=aggregator, family=families, arith=aggr_method)
     
     predictor = GraphPredictor(embed_layer, encoder, aggregator, gnn_dim,
                                node_level=node_level, activ=reg_activ)
@@ -240,16 +241,36 @@ def make_predictor(node_level=False,
     return predictor
 
 
-def  _make_custom_node_embed_layer(families):
+def  _make_custom_node_embed_layer(families, fe_mlp):
+    if fe_mlp:
+        print("[WARNING!!!!] YOU HAVE NOT DONE BATCHNORM1D FOR FE-MLP!!!!!!")
     if "ofa" in families:
-        from ge_utils.custom_embeds import MobileNetNodeEmbedding as NodeEmbedding
+        from ge_utils.custom_embeds_femlp import MobileNetNodeEmbedding as NodeEmbedding
         if "mbv3" in families:
             empty_moment_tsr = t.cat([t.zeros(5, 4, 1), t.ones(5, 4, 1)], dim=-1)
         else:
             empty_moment_tsr = t.cat([t.zeros(5, 5, 1), t.ones(5, 5, 1)], dim=-1)
+    elif "dit" in families:
+        if fe_mlp:
+            from ge_utils.custom_embeds_femlp import DiTNodeEmbedding as NodeEmbedding
+        else:
+            from ge_utils.custom_embeds import DiTNodeEmbedding as NodeEmbedding
+    elif "sdv15" in families:
+        if fe_mlp:
+            from ge_utils.custom_embeds_femlp import SDV15NodeEmbedding as NodeEmbedding
+        else:
+            from ge_utils.custom_embeds import SDV15NodeEmbedding as NodeEmbedding
+    elif "sdxl" in families:
+        if fe_mlp:
+            from ge_utils.custom_embeds_femlp import SDXLNodeEmbedding as NodeEmbedding
+        else:
+            from ge_utils.custom_embeds import SDXLNodeEmbedding as NodeEmbedding
+    elif "alpha" in families or "sigma" in families:
+        from ge_utils.custom_embeds import PixArtNodeEmbedding as NodeEmbedding
+    elif "hunyuan" in families:
+        from ge_utils.custom_embeds import HunYuanNodeEmbedding as NodeEmbedding
     else:
         raise NotImplementedError(f"No custom embedding for family {families}")
     ne = NodeEmbedding()
-    if empty_moment_tsr is not None:
-        ne.moment_tsr = t.nn.Parameter(empty_moment_tsr, requires_grad=False)
     return ne
+    

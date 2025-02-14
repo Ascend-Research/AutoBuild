@@ -13,7 +13,7 @@ def graph_regressor_batch_fwd(net, batch, index=None, ext_feat=None):
     return net(batch)
 
 
-def get_regress_train_test_data(caches="ofa_mbv3", format="custom", train_ratio = 0.9, seed=None, label='acc'):
+def get_regress_train_test_data(caches="ofa_mbv3", format="custom", train_ratio = 0.9, seed=None, label='acc', fold=None):
 
     data = []
     file_prefixes = caches.split("+")
@@ -40,14 +40,39 @@ def get_regress_train_test_data(caches="ofa_mbv3", format="custom", train_ratio 
 
     print(f"Collected {valid_instances}/{len(data)} ({(100*valid_instances) / len(data)}%) data entries for label string '{label}'")
 
+    instances.sort(key=lambda x: x[-1])
     if seed is not None and type(seed) is int:
         random.seed(seed)
         random.shuffle(instances)
 
-    train_idx = int(len(instances) * train_ratio)
-    train_instances = instances[:train_idx]
-    test_instances = instances[train_idx:]
-
+    if fold is None:
+        train_idx = int(len(instances) * train_ratio)
+        train_instances = instances[:train_idx]
+        test_instances = instances[train_idx:]
+    else:
+        assert fold in range(5) and train_ratio == 0.8
+        if fold == 0 or fold == 4:
+            if fold == 4:
+                instances.reverse()
+            idx = int(len(instances) * 0.2)
+            test_instances = instances[:idx]
+            train_instances = instances[idx:]
+        elif fold == 1 or fold == 3:
+            if fold == 3:
+                instances.reverse()
+            idx1 = int(len(instances) * 0.2)
+            idx2 = idx1 * 2
+            test_instances = instances[idx1:idx2]
+            train1 = instances[:idx1]
+            train2 = instances[idx2:]
+            train_instances = train1 + train2
+        else: # fold == 2
+            idx1 = int(len(instances) * 0.4)
+            idx2 = int(len(instances) * 0.6)
+            test_instances = instances[idx1:idx2]
+            train1 = instances[:idx1]
+            train2 = instances[idx2:]
+            train_instances = train1 + train2
     return train_instances, test_instances, best_entry
 
         
@@ -61,6 +86,22 @@ def standardize_targets(instances, xmu=None, xsig=None):
         print("Normalizing using existing mean/s.dev")
         instances = _apply_normal_fit(instances, xmu, xsig)
     return instances, xmu, xsig
+
+def boost_train_data(instances):
+    from copy import deepcopy
+    # Assume N(0, 1)
+    new_instances = []
+    for i in instances:
+        new_instances.append(i)
+        if i[-1] > 1:
+            new_instances.append(deepcopy(i))
+        if i[-1] > 2:
+            new_instances.append(deepcopy(i))
+        if i[-1] > 3:
+            new_instances.append(deepcopy(i))
+    new_instances.sort(key = lambda x:x[-1])
+    random.shuffle(new_instances)
+    return new_instances
 
 
 def make_dataloader(instances, format="onnx_ir", batch_size=32, shuffle=True, undirected=False):
