@@ -1,5 +1,5 @@
 # Building Optimal Neural Architectures using Interpretable Knowledge
-# Qua<sup>2</sup>SeDiMo Branch
+# [Qua<sup>2</sup>SeDiMo](https://github.com/Ascend-Research/Qua2SeDiMo) Branch
 
 <p align="center">
     <a href="https://aaai.org/Conferences/AAAI-23/" alt="Conference">
