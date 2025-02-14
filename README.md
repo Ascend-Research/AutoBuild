@@ -51,7 +51,7 @@ python train_predictor_fold_ndcg.py -families alpha -tag "alpha_ndcg_code_submis
 
 This script uses joblib to the `K=5` fold splits simultaneously. We strongly recommend piping output to a text file as shown in the example. The script will report SRCC and/or NDCG@10 for each fold. When each fold is complete, it will then call `label_units_sdm_fold.py` twice to perform the subgraph labeling, once for the node-level optimization, and again for the subgraph-level optimization. These are the subgraph scores, stored in `units/`. We provide several examples for the node and subgraph optimization already (subgraph-level optimization files are large, so there's only a few). You can use ipython and pickle to open the file and enumerate the subgraphs to look at how they are setup and their scores. 
 
-Additionally, `label_units_sdm_fold.py` calls `convert_sdm_unit_to_scheme` to generate the optimal quantization configuration and store it in `quant_configs/`. We provide some sample quantization configurations from the paper and they can be paired with the forked `q-diffusion` code to evaluate (requires generating a 'supernetwork' first due to size limit; see `README.md` in the `q-diffusion` fork).
+Additionally, `label_units_sdm_fold.py` calls `convert_sdm_unit_to_scheme` to generate the optimal quantization configuration and store it in `quant_configs/`. These can then be used with the main Qua<sup>2</sup>SeDiMo code repository.
 
 ## Analyzing Quantization Sensitivity Insights and Generating Plots
 *Coming Soon...*
