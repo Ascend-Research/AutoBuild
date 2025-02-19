@@ -6,6 +6,9 @@ from sdm.constants import QM_BIT_ORDER
 
 QUANT_METHODS = ["-".join([m, str(b)]) for m in AVAILABLE_QM for b in AVAILABLE_BP]
 
+# Passing in a list of subgraphs
+# each subgraph has a .score attribute.
+# Template for others like min, 
 def all_score(nx_graph_list):
     return [sg.score for sg in nx_graph_list]
 

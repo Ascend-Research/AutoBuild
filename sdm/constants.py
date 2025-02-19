@@ -3,7 +3,6 @@ from sdm.graph_dit import DIT_TSX_LAYERS_LUT
 from sdm.graph_sdv15 import SDV15_LAYERS_LUT
 from sdm.graph_sdxl import SDXL_LAYERS_LUT
 
-
 QM_BIT_ORDER = OrderedDict()
 QM_BIT_ORDER['kmeans-4'] = "K-Means C 4-bit"
 QM_BIT_ORDER['kmeans_all-4'] = "K-Means A 4-bit"
@@ -58,6 +57,8 @@ DIT_BLOCK_TYPES["Out Proj."] = "model.proj_out*"
 
 
 DIT_LAYER_TYPES = OrderedDict()
+#DIT_LAYER_TYPES["t 1"] = "model.transformer_blocks.0.norm1.emb.timestep_embedder.linear_1*"
+#DIT_LAYER_TYPES["t 2"] = "model.transformer_blocks.0.norm1.emb.timestep_embedder.linear_2*"
 DIT_LAYER_TYPES["t-Embed"] = "model.transformer_blocks.0.norm1.emb.timestep_embedder.linear_*"
 DIT_LAYER_TYPES["Patchify"] = "*pos_embed.proj*"
 DIT_LAYER_TYPES["AdaLN"] = "*norm1.linear*"
@@ -67,6 +68,8 @@ DIT_LAYER_TYPES["SA-V"] = "*attn1.to_v*"
 DIT_LAYER_TYPES["SA-Out"] = "*attn1.to_out.0*"
 DIT_LAYER_TYPES["FF 1"] = "*ff.net.0.proj*"
 DIT_LAYER_TYPES["FF 2"] = "*ff.net.2*"
+#DIT_LAYER_TYPES["Out 1"] = "*proj_out_1*"
+#DIT_LAYER_TYPES["Out 2"] = "*proj_out_2*"
 DIT_LAYER_TYPES["Out Proj."] = "*proj_out_*"
 
 
@@ -110,7 +113,11 @@ DIT_SUBGRAPHS['Out Proj.'] = 'proj_out'
 
 
 PIXART_LAYER_TYPES = OrderedDict()
+#PIXART_LAYER_TYPES["t 1"] = "model.adaln_single.emb.timestep_embedder.linear_1*"
+#PIXART_LAYER_TYPES["t 2"] = "model.adaln_single.emb.timestep_embedder.linear_2*"
 PIXART_LAYER_TYPES["t-Embed"] = "model.adaln_single.*"
+#PIXART_LAYER_TYPES["c 1"] = "model.caption_projection.linear_1.*"
+#PIXART_LAYER_TYPES["c 2"] = "model.caption_projection.linear_2.*"
 PIXART_LAYER_TYPES["c-Embed"] = "model.caption_projection.*"
 PIXART_LAYER_TYPES["Patchify"] = "*pos_embed.proj*"
 PIXART_LAYER_TYPES["AdaLN"] = "model.adaln_single.linear*"
@@ -135,6 +142,7 @@ PIXART_SUBGRAPHS_TYPES["Cross-Attn"] = "*crossattn*"
 PIXART_SUBGRAPHS_TYPES["Feedforward"] = "*ff*"
 PIXART_SUBGRAPHS_TYPES["Out Proj."] = "*proj_out*"
 
+# TODO I forget this bit...
 PIXART_SUBGRAPHS = OrderedDict()
 PIXART_SUBGRAPHS['t-Emb'] = "time_embedding"
 PIXART_SUBGRAPHS['c-Emb'] = "caption_embedding"
@@ -203,7 +211,13 @@ PIXART_BLOCK_TYPES["Out Proj."] = "model.proj_out*"
 
 
 HUNYUAN_LAYER_TYPES = OrderedDict()
+#HUNYUAN_LAYER_TYPES["t 1"] = "model.time_extra_emb.timestep_embedder.linear_1*"
+#HUNYUAN_LAYER_TYPES["t 2"] = "model.time_extra_emb.timestep_embedder.linear_2*"
+#HUNYUAN_LAYER_TYPES["e 1"] = "model.time_extra_emb.extra_embedder.linear_1*"
+#HUNYUAN_LAYER_TYPES["e 2"] = "model.time_extra_emb.extra_embedder.linear_2*"
 HUNYUAN_LAYER_TYPES['t-Embed'] = 'model.time_extra_emb.*'
+#HUNYUAN_LAYER_TYPES["c 1"] = "model.text_embedder.linear_1.*"
+#HUNYUAN_LAYER_TYPES["c 2"] = "model.text_embedder.linear_2.*"
 HUNYUAN_LAYER_TYPES["c-Embed"] = "model.text_embedder.*"
 HUNYUAN_LAYER_TYPES["Patchify"] = "*pos_embed.proj*"
 HUNYUAN_LAYER_TYPES["AdaLN"] = "*norm1.linear*"
@@ -217,7 +231,8 @@ HUNYUAN_LAYER_TYPES["CA-V"] = "*attn2.to_v*"
 HUNYUAN_LAYER_TYPES["CA-Out"] = "*attn2.to_out.0*"
 HUNYUAN_LAYER_TYPES["FF 1"] = "*ff.net.0.proj*"
 HUNYUAN_LAYER_TYPES["FF 2"] = "*ff.net.2*"
-HUNYUAN_LAYER_TYPES["Norm Out"] = "model.norm_out.*"
+HUNYUAN_LAYER_TYPES["Res Skip"] = "*skip*"
+HUNYUAN_LAYER_TYPES["Norm"] = "model.norm_out.*"
 HUNYUAN_LAYER_TYPES["Out"] = "model.proj_out.*"
 
 
@@ -231,6 +246,7 @@ HUNYUAN_SUBGRAPHS_TYPES["Skip"] = "*skip*"
 HUNYUAN_SUBGRAPHS_TYPES["Feedforward"] = "*ff*"
 HUNYUAN_SUBGRAPHS_TYPES["Out Proj."] = "*proj_out*"
 
+# TODO I forget this bit...
 HUNYUAN_SUBGRAPHS = OrderedDict()
 HUNYUAN_SUBGRAPHS['t-Emb'] = "time_embedding"
 HUNYUAN_SUBGRAPHS['c-Emb'] = "text_embedder"
@@ -344,8 +360,11 @@ SDV15_BLOCK_TYPES["Conv Out"] = 'model.out.2.weight_quantizer'
 SDV15_LAYER_TYPES = [f"*{k}.weight_quantizer" for k, v in SDV15_LAYERS_LUT.items() if v > 0]
 
 SDV15_LAYER_TYPES = OrderedDict()
+#SDV15_LAYER_TYPES["t 1"] = "*time_embed.0*"
+#SDV15_LAYER_TYPES["t 2"] = "*time_embed.2*"
 SDV15_LAYER_TYPES["t-Embed"] = "*time_embed.*"
 SDV15_LAYER_TYPES["Conv In"] = "*0.0*"
+#SDV15_LAYER_TYPES["Downsample"] = "*op*"
 SDV15_LAYER_TYPES["Res In"] = "*in_layers.2*"
 SDV15_LAYER_TYPES["Res t-Emb"] = "*emb_layers.1*"
 SDV15_LAYER_TYPES["Res Out"] = "*out_layers.3*"
@@ -362,6 +381,7 @@ SDV15_LAYER_TYPES["CA-Out"] = "*attn2.to_out.0*"
 SDV15_LAYER_TYPES["FF 1"] = "*ff.net.0.proj*"
 SDV15_LAYER_TYPES["FF 2"] = "*ff.net.2*"
 SDV15_LAYER_TYPES["Proj Out"] = "*1.proj_out*"
+#SDV15_LAYER_TYPES["Upsample"] = "*conv*"
 SDV15_LAYER_TYPES["Conv Out"] = "*out.2*"
 
 SDV15_SUBGRAPH_TYPES = OrderedDict()
@@ -372,9 +392,11 @@ SDV15_SUBGRAPH_TYPES['ResBlk'] = '*resblk*'
 SDV15_SUBGRAPH_TYPES['SA'] = '*attn1*'
 SDV15_SUBGRAPH_TYPES['CA'] = '*attn2*'
 SDV15_SUBGRAPH_TYPES['FF'] = '*tf_ff*'
+#SDV15_SUBGRAPH_TYPES['TF Proj Ou'] = '*tf_proj_out*' # I am going to skip-over this one...
 SDV15_SUBGRAPH_TYPES['Upsample'] = '*upsample_blk_*'
 SDV15_SUBGRAPH_TYPES['Conv Out'] = '*conv_out*'
 
+#SDV15_SUBGRAPHS = ["", , , , , "*output*tf*"]
 SDV15_SUBGRAPHS = OrderedDict()
 SDV15_SUBGRAPHS['t-Embed'] = "*time_embedding*"
 SDV15_SUBGRAPHS['Conv In'] = "*conv_in*"
@@ -390,6 +412,7 @@ SDV15_SUBGRAPHS['Conv Out'] = "*conv_out*"
 
 SDXL_BLOCK_TYPES = OrderedDict() 
 SDXL_BLOCK_TYPES['t-Embed'] = 'model.time_embedding*'
+#SDXL_BLOCK_TYPES['t_add'] = 'model.add_embedding*'
 SDXL_BLOCK_TYPES['Conv In'] = 'model.conv_in.weight_quantizer'
 SDXL_BLOCK_TYPES["Input ResBlk"] = "model.down_blocks.*.resnets.*"
 SDXL_BLOCK_TYPES["Downsample"] = '*downsamplers*'
@@ -410,8 +433,13 @@ SDXL_BLOCK_TYPES["Conv Out"] = 'model.conv_out.weight_quantizer'
 SDXL_LAYER_TYPES = [f"*{k}.weight_quantizer" for k, v in SDXL_LAYERS_LUT.items() if v < 26]
 
 SDXL_LAYER_TYPES = OrderedDict()
+#SDXL_LAYER_TYPES["t 1"] = "*time_embedding.linear_1*"
+#SDXL_LAYER_TYPES["t 2"] = "*time_embedding.linear_2*"
 SDXL_LAYER_TYPES["t-Embed"] = "*_embedding.linear_*"
+#SDXL_LAYER_TYPES["a 1"] = "*add_embedding.linear_1*"
+#SDXL_LAYER_TYPES["a 2"] = "*add_embedding.linear_2*"
 SDXL_LAYER_TYPES["Conv In"] = "*conv_in*"
+#SDXL_LAYER_TYPES["Downsample"] = "*downsamplers.0.conv*"
 SDXL_LAYER_TYPES["Res In"] = "*conv1*"
 SDXL_LAYER_TYPES["Res t-Emb"] = "*time_emb_proj*"
 SDXL_LAYER_TYPES["Res Out"] = "*conv2*"
@@ -428,18 +456,24 @@ SDXL_LAYER_TYPES["CA-Out"] = "*attn2.to_out.0*"
 SDXL_LAYER_TYPES["FF 1"] = "*ff.net.0.proj*"
 SDXL_LAYER_TYPES["FF 2"] = "*ff.net.2*"
 SDXL_LAYER_TYPES["Proj Out"] = "*proj_out*"
+#SDXL_LAYER_TYPES["Upsample"] = "*upsamplers.0.conv*"
 SDXL_LAYER_TYPES["Conv Out"] = "*conv_out*"
 
+# NOTE: Downsamplers incorporated into another blk.
 SDXL_SUBGRAPH_TYPES = OrderedDict()
 SDXL_SUBGRAPH_TYPES['t-Embed'] = '*time_embedding*'
 SDXL_SUBGRAPH_TYPES['Conv In'] = '*conv_in*'
+# These were commented out for bar plot
+#SDXL_SUBGRAPH_TYPES['Downsample'] = '*op9*' # Its incorporated into resblk for SDXL
 SDXL_SUBGRAPH_TYPES['ResBlk'] = '*resblk*'
 SDXL_SUBGRAPH_TYPES['SA'] = '*attn1*'
 SDXL_SUBGRAPH_TYPES['CA'] = '*attn2*'
 SDXL_SUBGRAPH_TYPES['FF'] = '*ff*'
-SDXL_SUBGRAPH_TYPES['Proj Out'] = '*proj*' 
+SDXL_SUBGRAPH_TYPES['Proj Out'] = '*proj*' # I am going to skip-over this one...
+SDXL_SUBGRAPH_TYPES['Upsample'] = '*upsampler*' # Therefore, also skipping the upsample.
 SDXL_SUBGRAPH_TYPES['Conv Out'] = '*conv_out*'
 
+#SDXL_SUBGRAPHS = [, , , , , , , , ]
 SDXL_SUBGRAPHS = OrderedDict()
 SDXL_SUBGRAPHS['t-Embed'] = "*time_embedding*"
 SDXL_SUBGRAPHS['Conv In'] = "*conv_in*"
