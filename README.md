@@ -44,7 +44,7 @@ $ pip install ofa gdown pyyaml thop
 ```
 
 ### Architecture Graph Datasets
-Get the data from this [Google Drive link](https://drive.google.com/drive/folders/1Ku2KmpU1edTZH8su9zCEaT6LiajjUlAg?usp=sharing) and place the contents in `/cache/`
+Get the data from this ~~[Google Drive link](https://drive.google.com/drive/folders/1Ku2KmpU1edTZH8su9zCEaT6LiajjUlAg?usp=sharing)~~ [HuggingFace repo](https://huggingface.co/datasets/kgmills/AutoBuild) and place the contents in `/cache/`
 
 * `ofa_mbv3_custom_cache.pkl` and `ofa_pn_custom_cache.pkl` each contain our 3k architecture sets, respectively. These use the sequence graph format and are annoted with accuracy and latency on the GPU, CPU and NPU.
 * `ofa_mbv3_pan_seg_custom_cache.pkl` and `ofa_pn_pan_seg_custom_cache.pkl` are trimmed-down versions of the `pseudo-labeled` architecture caches provided by AIO-P in sequence graph format.
